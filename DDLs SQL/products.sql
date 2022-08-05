@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS fiap.products (
+    _id INT NOT NULL,
+    code INT,
+    description VARCHAR(2000),
+    name VARCHAR(255),
+    _ColourGroup INT,
+    _GraphicalAppearance INT,
+    _GarmentGroup INT,
+    _PerceivedColourValue INT,
+    _PerceivedColourMaster INT,
+    _Department INT,
+    _Index INT,
+    _ProductType INT,
+    PRIMARY KEY (_id),
+    FOREIGN KEY (_ColourGroup) REFERENCES fiap.colour_group(_id),
+    FOREIGN KEY (_GraphicalAppearance) REFERENCES fiap.graphical_appearance(_id),
+    FOREIGN KEY (_GarmentGroup) REFERENCES fiap.garment_group(_id),
+    FOREIGN KEY (_PerceivedColourValue) REFERENCES fiap.perceived_colour_value(_id),
+    FOREIGN KEY (_PerceivedColourMaster) REFERENCES fiap.perceived_colour_master(_id),
+    FOREIGN KEY (_Department) REFERENCES fiap.department(_id),
+    FOREIGN KEY (_Index) REFERENCES fiap.index(_id),
+    FOREIGN KEY (_ProductType) REFERENCES fiap.product_type(_id)
+);
