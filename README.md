@@ -35,7 +35,10 @@ https://medium.com/google-cloud/launching-neo4j-on-googles-kubernetes-marketplac
 
 ![image 50%](https://user-images.githubusercontent.com/49615846/183983810-ef255c16-e112-4129-8a07-b07b467224c5.png)
 
-Neste Repo a intenção é utilizar o Neo4j Desktop
+Neste Repo a intenção é utilizar o Neo4j Desktop com a seguinte arquitetura na máquina local, pois nosso maior foco será nas queries de recomendação e custo zero para testes com objetivo acadêmico
+
+![image](https://user-images.githubusercontent.com/49615846/184018416-d554c9d6-f3c2-483f-91ed-3c4052dd74e4.png)
+
 
 ### Relacionamento dos dados
 
@@ -196,6 +199,7 @@ Exemplo com o uso do Bloom para visualização, esta query busca produtos com me
 Este plugin oferece alguns algoritmos para aplicar na analise de grafos, no exemplo abaixo usamos o algoritmo Louvain, um método para detectar comunidades em redes, fizemos recomendações baseadas nos produtos mais comprados pelo cliente para 5 clientes, e 3 comunidades foram detectadas, isso porque para 3 clientes foram recomendados produtos com a propriedade de cor Black em comum (Nó ColourGroup Black destacado em vermelho), formando a comunidade na cor amarela.
 
 Escolhendo o algoritmo Louvain: 
+
 ![image](https://user-images.githubusercontent.com/49615846/184012277-8ffe82a2-6740-45fa-a1ed-3a1f25e493f1.png)
 
 ![image](https://user-images.githubusercontent.com/49615846/184013296-4ea23cbe-6ae7-4d55-a98c-5d2cd553b87d.png)
