@@ -137,6 +137,69 @@ O modelo de grafos final usando um cliente e produto como exemplo:
 
 ![image](https://user-images.githubusercontent.com/49615846/183996706-c046925f-e78f-4fa2-85f9-68db3dd4b653.png)
 
+### Mecânismo de recomendação
+
+Agora que temos os nós e relações no Neo4J podemos criar um mecânismo de recomendação, primeiro definimos duas consultas de negócio e a partir dela construímos duas queries em cypher para responder essas perguntas.
+
+#### Consulta 1
+Recomendação: Pessoas que compraram este produto também compraram...
+O cliente José compra um produto X, outros clientes também compraram esse produto e compraram um produto Y que o José não comprou, vamos recomendar? 
+A recomendação será feita com base no produto Y mais comprado pelos clientes que também compraram X
+
+Na query abaixo substitua o campo $id por qualquer id que deseje testar
+
+*Neo4J Query/Recommendation_of_similiar_customers.cypher*
+```cypher
+CALL {
+MATCH (c:Customer {_id:$id})-[r:COMPROU]->(p:Product)<-[r2:COMPROU]-(c2:Customer)-[r3:COMPROU]->(p2:Product) 
+WHERE c<>c2 AND NOT exists((c)-[:COMPROU]->(p2))
+RETURN c, p2, count(p2) AS frequency
+ORDER BY frequency DESC LIMIT 1
+} 
+MATCH (c)-[r:COMPROU]->(p:Product)<-[r2:COMPROU]-(c2:Customer)-[r3:COMPROU]->(p2) 
+return *
+```
+
+Exemplo com o uso do Bloom para visualização
+![image](https://user-images.githubusercontent.com/49615846/184007072-fe7c1fc0-d038-485c-a534-82e78cfc2366.png)
+
+A query não utiliza WHERE para buscar produtos que tenham mesmas propriedades e a recomendação retornou um produto que tem o mesmo tipo, departamento e cor, o que é um forte indicio de que a recomendação está funcionando 
+![image](https://user-images.githubusercontent.com/49615846/184007417-d7d66590-5954-4c78-a77f-0756a5d116d8.png)
+
+
+#### Consulta 2
+Recomendação: Produtos semelhantes ao que você comprou...
+O cliente José compra com frequencia o produto X, vamos recomendar produtos parecidos com X 
+A recomendação será feita com base no produto X mais comprado por José
+
+Na query abaixo substitua o campo $id por qualquer id que deseje testar
+
+*Neo4J Query/Recommendation_of_similiar_products.cypher*
+```cypher
+CALL {
+MATCH (c:Customer {_id:'1000001'})-[r:COMPROU]->(p:Product) 
+RETURN c, p, count(p) AS frequency 
+ORDER BY frequency DESC, p.name ASC 
+LIMIT 1
+} 
+MATCH (p)-[r2:HAS_Department]->(d:Department)<-[r3:HAS_Department]-(p2) 
+MATCH (p)-[r4:HAS_ColourGroup]->(cg:ColourGroup)<-[r5:HAS_ColourGroup]-(p2)
+MATCH (p)-[r6:HAS_GarmentGroup]->(gg:GarmentGroup)<-[r7:HAS_GarmentGroup]-(p2) 
+MATCH (p)-[r8:HAS_ProductType]->(pt:ProductType)<-[r9:HAS_ProductType]-(p2)
+RETURN * LIMIT 20
+```
+
+Exemplo com o uso do Bloom para visualização, esta query busca produtos com mesmo Department, ColourGroup, GarmentGroup e ProductType.
+![image](https://user-images.githubusercontent.com/49615846/184010328-ff928f76-2dd5-46c7-973e-486da7248b00.png)
+
+### Uso do Plugin Data Science do Neo4J
+Este plugin oferece alguns algoritmos para aplicar na analise de grafos, no exemplo abaixo usamos o algoritmo Louvain, um método para detectar comunidades em redes, fizemos recomendações baseadas nos produtos mais comprados pelo cliente para 5 clientes, e 3 comunidades foram detectadas, isso porque para 3 clientes foram recomendados produtos com a propriedade de cor Black em comum (Nó ColourGroup Black destacado em vermelho), formando a comunidade na cor amarela.
+
+Escolhendo o algoritmo Louvain: 
+![image](https://user-images.githubusercontent.com/49615846/184012277-8ffe82a2-6740-45fa-a1ed-3a1f25e493f1.png)
+
+![image](https://user-images.githubusercontent.com/49615846/184013296-4ea23cbe-6ae7-4d55-a98c-5d2cd553b87d.png)
+
 
 
 
