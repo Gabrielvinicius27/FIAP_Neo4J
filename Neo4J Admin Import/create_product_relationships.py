@@ -1,7 +1,7 @@
 import pandas as pd
 
 base_path = 'C:\\Users\\Bruna\\.Neo4jDesktop\\relate-data\\dbmss\\dbms-bd187d2e-6cf7-400f-bd40-0fa0ca6b5e04\\import'
-# Ler arquivo Customer-001.csv
+# Ler arquivo Product.csv
 df = pd.read_csv(f'{base_path}/Product.csv', escapechar='\\')
 
 columns = [column for column in df.columns if (str(column[0]) == '_' and column != '_id')]
