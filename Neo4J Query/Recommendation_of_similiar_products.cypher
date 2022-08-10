@@ -1,3 +1,6 @@
+// Recomendação com base no produto que eu mais comprei
+// Retorna produtos com as mesmas caracteristicas do produto mais comprado por mim
+
 CALL {
 MATCH (c:Customer {_id:'1000001'})-[r:COMPROU]->(p:Product) 
 RETURN c, p, count(p) AS frequency 
